@@ -7,9 +7,7 @@ on:
 
 jobs:
   check-in:
-    runs-on:
-      group: Default
-      labels: [self-hosted, Windows, X64, codex]
+    runs-on: [self-hosted, Windows, X64, codex]
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
@@ -28,9 +26,7 @@ jobs:
           DISCORD_USER: ${{ secrets.DISCORD_USER }}
   workflow-keepalive:
     if: github.event_name == 'schedule'
-    runs-on:
-      group: Default
-      labels: [self-hosted, Windows, X64, codex]
+    runs-on: [self-hosted, Windows, X64, codex]
     permissions:
       actions: write
     steps:
