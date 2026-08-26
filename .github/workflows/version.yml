@@ -7,7 +7,9 @@ on:
 
 jobs:
   check-version:
-    runs-on: [self-hosted, Windows, X64, codex]
+    runs-on:
+      group: Default
+      labels: [self-hosted, Windows, X64, codex]
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
@@ -38,7 +40,9 @@ jobs:
           }
   workflow-keepalive:
     if: github.event_name == 'schedule'
-    runs-on: [self-hosted, Windows, X64, codex]
+    runs-on:
+      group: Default
+      labels: [self-hosted, Windows, X64, codex]
     permissions:
       actions: write
     steps:
