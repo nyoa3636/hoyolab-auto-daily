@@ -7,39 +7,38 @@ on:
 
 jobs:
   check-version:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64, codex]
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
 
       - name: Fetch package.json from original repo
+        shell: pwsh
         run: |
-          curl -o remote-package.json \
-               https://raw.githubusercontent.com/sglkc/hoyolab-auto-daily/master/package.json
+          Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/sglkc/hoyolab-auto-daily/master/package.json' -OutFile 'remote-package.json'
 
       - name: Compare versions
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        shell: pwsh
         run: |
-          LOCAL_VERSION=$(jq -r .version package.json)
-          REMOTE_VERSION=$(jq -r .version remote-package.json)
-          echo "Local version: $LOCAL_VERSION"
-          echo "Remote version: $REMOTE_VERSION"
+          $localVersion = (Get-Content -Raw -LiteralPath 'package.json' | ConvertFrom-Json).version
+          $remoteVersion = (Get-Content -Raw -LiteralPath 'remote-package.json' | ConvertFrom-Json).version
+          Write-Host "Local version: $localVersion"
+          Write-Host "Remote version: $remoteVersion"
 
-          if [ "$(printf '%s\n' "$REMOTE_VERSION" "$LOCAL_VERSION" | sort -V | head -n1)" != "$REMOTE_VERSION" ]; then
-            echo "Repository version is outdated. Do sync your fork!"
+          if ([version]$localVersion -lt [version]$remoteVersion) {
+            Write-Host 'Repository version is outdated. Do sync your fork!'
 
-            if [ ! -z "$DISCORD_WEBHOOK" ]; then
-              curl -H "Content-Type: application/json" \
-                   -d '{"content": "(INFO) New version released. Your repository is outdated."}' \
-                   $DISCORD_WEBHOOK
-            fi
+            if ($env:DISCORD_WEBHOOK) {
+              Invoke-RestMethod -Uri $env:DISCORD_WEBHOOK -Method Post -ContentType 'application/json' -Body (@{content='(INFO) New version released. Your repository is outdated.'} | ConvertTo-Json -Compress)
+            }
 
             exit 1
-          fi
+          }
   workflow-keepalive:
     if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64, codex]
     permissions:
       actions: write
     steps:
