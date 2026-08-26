@@ -7,7 +7,7 @@ on:
 
 jobs:
   check-in:
-    runs-on: [self-hosted, Windows, X64, codex]
+    runs-on: ubuntu-latest
     steps:
       - name: Clone Repo
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           DISCORD_USER: ${{ secrets.DISCORD_USER }}
   workflow-keepalive:
     if: github.event_name == 'schedule'
-    runs-on: [self-hosted, Windows, X64, codex]
+    runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
