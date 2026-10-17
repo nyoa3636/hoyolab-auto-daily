@@ -1,0 +1,30 @@
+name: sea-sites-personal-research
+on:
+  push:
+    branches: [research/sea-spots-20261018]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4 pyshp
+      - name: Collect nationwide sites and produce dataset
+        run: python research/sea_fishing_collect.py
+      - name: Commit CSV to research branch
+        run: |
+          git config user.name "sea-spot-research-bot"
+          git config user.email "sea-spots@users.noreply.github.com"
+          git add output/national_sea_fishing_sites.csv output/research_report.json
+          git diff --staged --quiet || (git commit -m "Collect nationwide sea fishing sites" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sea-fishing-dataset
+          path: output/
