@@ -1,4 +1,4 @@
-name: Publish final validated sea fishing GIS dataset
+name: Publish national OSM and corrected 8 prefectures sea fishing GIS dataset
 on:
   push:
     branches: [research/geo-final-20261018]
