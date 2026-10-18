@@ -1,4 +1,4 @@
-name: Nationwide national-land C23 shoreline verification for 5330 fishing sites
+name: Official C23 shoreline matching with full named coastal sections
 on:
   push:
     branches: [research/geo-C23-20261018]
