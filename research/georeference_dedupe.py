@@ -107,7 +107,7 @@ def load_ports():
                 pts=sf.shape.points
                 if not pts or len(pts)<2:continue
                 # Preserve multipart survey boundaries; never interpret a nonclosed line as a polygon.
-                a=sf.shape.parts[:]
+                a=list(sf.shape.parts)
                 b=a[1:]+[len(pts)]
                 lines=[LineString(pts[x:y]) for x,y in zip(a,b) if y-x>=2]
                 if lines:bound[key].extend(lines)
