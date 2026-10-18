@@ -1,0 +1,20 @@
+{
+  "regions_reported": [
+    "chubu",
+    "chugoku",
+    "hokkaido",
+    "kansai",
+    "kanto",
+    "kyushu",
+    "shikoku",
+    "tohoku"
+  ],
+  "all_regional_features": 1481,
+  "by_kind": {
+    "beach": 712,
+    "port": 552,
+    "pier": 217
+  },
+  "source": "Geofabrik regional OSM PBF",
+  "known_limitations": "Physical mapped beaches, harbours, piers; these are not the legal fishing-access boundaries"
+}
