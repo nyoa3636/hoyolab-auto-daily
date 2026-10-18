@@ -1,0 +1,31 @@
+name: Probe fishing-spot page geolocation metadata
+on:
+  push:
+    branches: [research/geo-osm-fast-20261018]
+    paths: [.github/workflows/geo_source_probe.yml]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install --quiet requests beautifulsoup4
+      - name: Inspect metadata coordinates and map embed, no writes
+        run: |
+          python - <<'PY'
+          import requests,re
+          from bs4 import BeautifulSoup
+          ulist=["https://tsuriba.info/spot/2130","https://tsuriba.info/spot/100","https://tsuriba.info/spot/800","https://tsurispot.com/spots/hakodate-zenikamezawa-beach-a13"]
+          for url in ulist:
+            try:
+              r=requests.get(url,timeout=18,headers={"User-Agent":"Mozilla/5.0"})
+              h=r.text;s=BeautifulSoup(h,"html.parser")
+              print("PAGE",url,r.status_code,len(h))
+              for a in s.select("iframe[src],a[href],meta[content]"):
+                if any(x in str(a).lower() for x in ("map","lat","lon","coord","geo","google","gsi","地図")):
+                  print("MAP_ELEM",str(a)[:300])
+              for reg in [r'[-]?\d{2}\.\d{4,8}\s*,\s*1\d{2}\.\d{4,8}',r'latitude.{0,85}',r'longitude.{0,85}',r'["\x27]lat["\x27].{0,35}',r'latlng.{0,70}',r'@3\d\.\d+,1\d\d\.\d+']:
+                mat=re.findall(reg,h,re.IGNORECASE)
+                print("PATTERN",reg,"NUM",len(mat),"FIRST",mat[:6])
+            except Exception as e:print("ERROR",url,repr(e))
+          PY
