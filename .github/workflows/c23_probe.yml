@@ -9,11 +9,11 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - run: pip install --quiet requests
+      - run: pip install --quiet requests pyshp
       - name: Probe direct official C23 archive and coastal naming geometry
         run: |
           python - <<'PY'
-          import requests,zipfile,io,re
+          import requests,zipfile,io,re,shapefile
           roots=[
           'https://nlftp.mlit.go.jp/ksj/gml/data/C23/C23-06/C23-06_22_GML.zip',
           'https://nlftp.mlit.go.jp/ksj/gml/data/C23/C23-06_22_GML.zip',
@@ -29,6 +29,10 @@ jobs:
               for f in z.namelist():
                 if f.endswith('.shp'):
                   print('FOUND SHP',f,flush=True)
+                  stem=f[:-4]
+                  rr=shapefile.Reader(shp=io.BytesIO(z.read(f)),shx=io.BytesIO(z.read(stem+'.shx')),dbf=io.BytesIO(z.read(stem+'.dbf')),encoding='cp932',encodingErrors='replace')
+                  print('FIELDS',[field[0] for field in rr.fields[1:]],'N',len(rr),flush=True)
+                  for feat in list(rr.iterShapeRecords())[:6]: print('PORTION',list(feat.record),feat.shape.shapeType,feat.shape.points[:3],flush=True)
                 if f.endswith('.xml') and 'C23' in f.upper():
                   b=z.read(f)
                   print('XML',f,len(b),b[:2800].decode('utf-8','replace'),flush=True)
