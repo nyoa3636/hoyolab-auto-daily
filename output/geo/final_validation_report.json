@@ -2,8 +2,8 @@
   "base_records": 5371,
   "final_records": 5365,
   "additional_deletions": 6,
-  "coordinates": 5349,
-  "coordinates_missing": 16,
+  "coordinates": 5365,
+  "coordinates_missing": 0,
   "extent_from_official_or_osm": 2597,
   "extent_not_verified": 2768,
   "survey_notes": "Actual physical footprints from national GIS, not legal boundaries for fishing.",
@@ -12,7 +12,9 @@
     "verified_location_corrections": 9,
     "cross_prefecture_river_mouth": 1,
     "mapped_extent_added": 52,
-    "missing_city_filled": 11
+    "additional_named_spots_filled": 9,
+    "broad_region_labels_centered": 7,
+    "missing_city_filled": 13
   },
   "issues": []
 }
