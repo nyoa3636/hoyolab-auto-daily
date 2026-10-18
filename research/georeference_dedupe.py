@@ -243,11 +243,10 @@ def osm_fetch(box):
       f'nwr["seamark:type"="harbour"]["name"]({s},{w},{n},{e});'
       ');out body geom;')
     hosts=["https://overpass.kumi.systems/api/interpreter",
-           "https://overpass.nchc.org.tw/api/interpreter",
            "https://overpass-api.de/api/interpreter"]
     for host in hosts:
         try:
-            r=requests.post(host,data={"data":query},timeout=135,
+            r=requests.post(host,data={"data":query},timeout=30,
                headers={"User-Agent":"Personal Japanese fishing location research, OpenStreetMap crossreference/1.0"})
             if r.status_code in (429,504,503):continue
             r.raise_for_status()
@@ -258,7 +257,7 @@ def osm_fetch(box):
 def osm_shapes(cityat):
     if os.getenv("SKIP_OSM")=="1":return []
     allfeatures={}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         for i,features in enumerate(pool.map(osm_fetch,OSM_BOXES),1):
             print("OSM BOX",i,"FEATURES",len(features),flush=True)
             for f in features:allfeatures[(f["type"],f["id"])]=f
