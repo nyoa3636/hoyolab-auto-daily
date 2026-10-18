@@ -1,0 +1,425 @@
+{
+  "input_count": 6177,
+  "deduplicated_count": 5371,
+  "removed_confident": 806,
+  "with_coordinate": 3205,
+  "without_coordinate": 2166,
+  "with_mapped_extent": 0,
+  "without_mapped_extent": 5371,
+  "geometry_features": 0,
+  "stats": {
+    "official_port_matches": 3499,
+    "municipality_filled": 94,
+    "coord_pref_mismatches": 20,
+    "municipality_conflicts": 112
+  },
+  "errors": [
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ],
+    [
+      "port boundary parse",
+      "can only append array (not \"list\") to array"
+    ]
+  ],
+  "notes": [
+    "漁港位置データと区域境界は2006年度。区域境界線を閉領域と誤認せず線として保存。",
+    "OSMは現況と異なる可能性があり、釣り許可範囲を意味しない。",
+    "地図上の実際の境界が取得できないレコードは推測した矩形で補完せず未確認とした。",
+    "同名の港と海岸・防波堤は原則別地点として維持。",
+    "重複削除は座標付き・行政区域一致・同一地物IDまたは35m以内の厳密な重複に限定。"
+  ]
+}
