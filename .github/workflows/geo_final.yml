@@ -1,0 +1,35 @@
+name: Publish final validated sea fishing GIS dataset
+on:
+  push:
+    branches: [research/geo-final-20261018]
+    paths: [.github/workflows/geo_final.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  finish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely
+      - run: python -m py_compile research/finish_final_spots.py
+      - name: Load all available nationwide geospatial boundary features
+        run: |
+          git fetch origin research/geo-pbf-footprints-20261018 --depth=1
+          git show FETCH_HEAD:output/geo/national_coastal_osm_features.csv > output/geo/national_coastal_osm_features.csv || rm -f output/geo/national_coastal_osm_features.csv
+      - name: Validate municipality, geocode remaining source pages, merge actual mapped coast footprints, remove evidenced duplicates
+        run: python -u research/finish_final_spots.py
+      - name: Commit audited final data
+        run: |
+          git config user.name "geo-research-bot"
+          git config user.email "geo-research-bot@users.noreply.github.com"
+          git add output/geo/final_*.csv output/geo/final_*.json
+          git diff --staged --quiet || (git commit -m "Publish GPS validated and physically bounded sea fishing sites" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: final-validated-sea-fishing-sites
+          path: output/geo/final_*
