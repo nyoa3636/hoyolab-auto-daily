@@ -132,6 +132,35 @@ def lookup_remainder(rows):
                 r["位置出典"]=url;r["位置照合"]="FishCast原典ページの構造化座標"
                 r["座標確認状況"]="座標あり";stats["fishcast_coords_added"]+=1
             else:issues.append(dict(error_type="missing_fishcast",name=r["釣り場名"],url=url,note=explanation))
+# Grounded cross-prefecture corrections: administrative polygons + direct tourism/map sources.
+# Coordinates are representative location markers, never legal fishing-access zones.
+VERIFIED_PLACES={
+ "岩井海岸":("千葉県","南房総市",None,None,"https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html","県所属誤りを地理境界で訂正"),
+ "幕張の浜":("千葉県","千葉市美浜区",None,None,"https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html","県所属誤りを地理境界で訂正"),
+ "浦安高洲海浜公園":("千葉県","浦安市",None,None,"https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html","県所属誤りを地理境界で訂正"),
+ "白子海岸":("千葉県","白子町",None,None,"https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html","県所属誤りを地理境界で訂正"),
+ "宮崎・境海岸(ヒスイ海岸)":("富山県","朝日町",None,None,"https://www.info-toyama.com/attractions/51009","富山県公式観光情報により県所属を訂正"),
+ "湯河原海岸":("神奈川県","湯河原町",35.1488889,139.1188889,"https://surf-ok.jp/surf-spot-yugawara-yoshihama/","隣接する吉浜海岸の代表点へ補正、厳密な地点輪郭は未確定"),
+ "王子ヶ浜海岸":("和歌山県","新宮市",33.7144949,136.000989,"https://mapfan.com/spots/SCC%2CJ%2C8VYR","和歌山県新宮市の王子ヶ浜名所代表点へ補正、厳密な地点輪郭は未確定"),
+}
+def apply_known_corrections(rows):
+    for r in rows:
+        name=r["釣り場名"]
+        if name in VERIFIED_PLACES:
+            pref,city,lat,lon,src,note=VERIFIED_PLACES[name]
+            old=r["都道府県"];r["都道府県"]=pref;r["市区町村"]=city
+            if lat is not None:
+                r["緯度"]=str(lat);r["経度"]=str(lon)
+            r["監査備考"]=(r.get("監査備考") or "")+"; "+note+" (旧県:"+old+")"
+            r["位置修正出典"]=src;r["位置照合"]=note
+            stats["verified_location_corrections"]+=1
+        elif name=="熊野川河口" and r["都道府県"]=="和歌山県":
+            # The river mouth has two shores in different prefectures.
+            r["市区町村"]="新宮市／紀宝町"
+            r["位置照合"]="両県跨り河口・代表点は三重県紀宝町側"
+            r["位置修正出典"]="https://tsuriba.info/spot/1681"
+            r["監査備考"]=(r.get("監査備考") or "")+"; 和歌山県新宮市と三重県紀宝町の県境を跨ぐ"
+            stats["cross_prefecture_river_mouth"]=1
 def region_validation(rows):
     cityat=G.municipal_shapes()
     if not cityat:return
@@ -140,7 +169,7 @@ def region_validation(rows):
         if not pp:continue
         loc=cityat(pp,within=0)
         if not loc:continue
-        if loc[0]!=r["都道府県"]:
+        if loc[0]!=r["都道府県"] and not (r["釣り場名"]=="熊野川河口" and loc[0]=="三重県"):
             # Strictly reject coordinates which fall inside another prefecture,
             # rather than allowing false confidence or deduplication based on bad GPS.
             r["監査備考"]=(r.get("監査備考") or "")+"; coordinate geographically in "+loc[0]+" not "+r["都道府県"]
@@ -200,8 +229,9 @@ def geo_dedupe(rows):
 def main():
     rows=reader(INPUT);print("INPUT",len(rows),flush=True)
     for r in rows:
-        r["不正座標"]="";r["地物区域の検証"]="未確認";r["範囲の意味"]="地理的物理地物の区域であり釣りの法的な許可区域ではない"
+        r["不正座標"]="";r["地物区域の検証"]="未確認";r["位置修正出典"]="";r["範囲の意味"]="地理的物理地物の区域であり釣りの法的な許可区域ではない"
     lookup_remainder(rows)
+    apply_known_corrections(rows)
     features=load_features()
     match_osm(rows,features)
     region_validation(rows)
