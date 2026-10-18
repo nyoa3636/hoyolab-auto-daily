@@ -183,49 +183,91 @@ def region_validation(rows):
             r["市区町村"]=loc[1]
             stats["missing_city_filled"]+=1
 def geo_dedupe(rows):
-    # Preserve original order to keep the stable source row index and supporting evidence.
+    """Remove strong duplicate names from the same physical facility, respecting spot type."""
     groups=collections.defaultdict(list)
     for i,r in enumerate(rows):
         n=root(r["釣り場名"])
-        if len(n)>1:
+        if len(n)>=2:
             groups[(r["都道府県"],n,kind(r))].append(i)
     parent=list(range(len(rows)))
+    reasons={}
     def find(i):
         while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]
         return i
-    def union(i,j):
+    def union(i,j,why):
         a,b=find(i),find(j)
         if a!=b:parent[b]=a
-    evidence={}
+        reasons[(min(i,j),max(i,j))]=why
+    def related_muni(a,b):
+        if cityeq(a,b):return True
+        a=re.sub(r"[\s　]",'',str(a or ""))
+        b=re.sub(r"[\s　]",'',str(b or ""))
+        if a and b and (a in b or b in a):return True
+        def simple(x):return re.sub(r"[市町村区]+$","",x)
+        return bool(a and b and simple(a)==simple(b))
     for g in groups.values():
         if len(g)<2:continue
         for x in range(len(g)):
             for y in range(x+1,len(g)):
-                i,j=g[x],g[y];a,b=rows[i],rows[j]
+                i,j=g[x],g[y]
+                a,b=rows[i],rows[j]
                 p,q=point(a),point(b)
                 if not p or not q:continue
-                if a.get("市区町村") and b.get("市区町村") and not cityeq(a["市区町村"],b["市区町村"]):continue
-                same_id=a.get("範囲ジオメトリID") and a["範囲ジオメトリID"]==b.get("範囲ジオメトリID")
-                same_c09=a.get("照合管理ID") and a["照合管理ID"]==b.get("照合管理ID")
-                d=dist(p,q)
-                if same_c09 or (same_id and d<=1200) or (d<=22 and normal(a["釣り場名"])==normal(b["釣り場名"])):
-                    union(i,j);evidence[(i,j)]="共通C09施設" if same_c09 else "同一GIS地物"+str(same_id)+f"距離{d:.1f}m"
-    parts=collections.defaultdict(list)
-    for i in range(len(rows)):parts[find(i)].append(i)
-    olddup=[];retained=set(range(len(rows)))
-    def score(x):
-        return (bool(x.get("範囲ジオメトリID")),bool(x.get("緯度")),bool(x.get("市区町村")),len(x.get("住所") or ""),bool(x.get("釣果根拠")))
-    for arr in parts.values():
-        if len(arr)<=1:continue
-        keep=max(arr,key=lambda idx:score(rows[idx]))
-        master=rows[keep]
-        for idx in arr:
-            if idx==keep:continue
-            other=rows[idx];retained.remove(idx)
-            master["統合した出典"]=";".join(dict.fromkeys(filter(None,(master.get("統合した出典","")+";"+other.get("統合した出典","")).split(";"))))
-            olddup.append({"保持した元行":master.get("元CSV行",""),"統合した元行":other.get("元CSV行",""),"地点名":other["釣り場名"],
-               "保持した地点名":master["釣り場名"],"都道府県":master["都道府県"],"根拠":("同一地理地物ID" if master.get("範囲ジオメトリID") and master["範囲ジオメトリID"]==other.get("範囲ジオメトリID") else "同一公式施設IDまたは座標一致"),"削除元URL":other["出典URL"]})
-    return [rows[i] for i in sorted(retained)],olddup
+                # Vast surf-area labels are not the same as an individual beach.
+                if a["釣り場名"] in BROAD_AREA_NAMES or b["釣り場名"] in BROAD_AREA_NAMES:continue
+                t=kind(a);d=dist(p,q)
+                id1=a.get("範囲ジオメトリID");id2=b.get("範囲ジオメトリID")
+                same_shape=bool(id1 and id1==id2)
+                cid1=a.get("照合管理ID");cid2=b.get("照合管理ID")
+                same_c09=bool(cid1 and cid1==cid2)
+                muni_ok=related_muni(a.get("市区町村"),b.get("市区町村"))
+                exact=normal(a["釣り場名"])==normal(b["釣り場名"])
+                why=""
+                if t=="port":
+                    if same_c09 or (same_shape and d<1500):why="同一漁港地物識別子"
+                    elif d<=3:why="名称同一・公的／掲載元のGPS位置が3m以内"
+                    elif d<=150 and muni_ok:why="名称同一・行政地名一致・150m以内"
+                    elif d<=90 and (a["出典"]=="国土数値情報C09" or b["出典"]=="国土数値情報C09"):
+                        why="国土数値情報と民間掲載の同名漁港・90m以内"
+                elif t=="beach":
+                    if same_shape and d<=1500:why="海浜名称一致・同一GIS地物"
+                    elif d<=12 and (muni_ok or not a.get("市区町村") or not b.get("市区町村")):
+                        why="同一海岸の別表記・12m以内"
+                elif t=="pier":
+                    if same_shape and d<250:why="同一GIS堤防地物"
+                    elif exact and d<=12:why="同名堤防のGPS位置一致"
+                if why:union(i,j,why)
+    components=collections.defaultdict(list)
+    for i in range(len(rows)):components[find(i)].append(i)
+    removals=[];keepers=set(range(len(rows)))
+    def score(r):
+        # For wrongly mapped legacy C09 municipalities, prefer modern local fishing pages.
+        return (r["出典"]!="国土数値情報C09",bool(r.get("範囲ジオメトリID")),
+          bool(r.get("市区町村")),bool(r.get("緯度")),len(r.get("住所") or ""))
+    for ids in components.values():
+        if len(ids)<2:continue
+        master_idx=max(ids,key=lambda i:score(rows[i]))
+        master=rows[master_idx]
+        for i in ids:
+            if i==master_idx:continue
+            child=rows[i]
+            keepers.discard(i)
+            oldshape=child.get("範囲ジオメトリID")
+            if not master.get("範囲ジオメトリID") and oldshape:
+                for field in ["範囲西端経度","範囲南端緯度","範囲東端経度","範囲北端緯度",
+                              "範囲ジオメトリID","範囲種別","範囲出典"]:
+                    master[field]=child.get(field,"")
+            if not master.get("照合管理ID") and child.get("照合管理ID"):
+                master["照合管理ID"]=child["照合管理ID"]
+            master["統合した出典"]=";".join(dict.fromkeys(filter(None,
+               (master.get("統合した出典","")+";"+child.get("統合した出典","")).split(";"))))
+            removals.append({"保持した元行":master.get("元CSV行",""),"統合した元行":child.get("元CSV行",""),
+                "地点名":child["釣り場名"],"保持した地点名":master["釣り場名"],
+                "都道府県":master["都道府県"],
+                "根拠":"同一地名・同一施設の座標またはGIS境界に基づく照合",
+                "削除元URL":child["出典URL"]})
+            stats["safe_duplicate_merges"]+=1
+    return [rows[i] for i in sorted(keepers)],removals
 
 # Remaining single-point locations were checked against published map positions.
 # A 'reference-area' point is not claimed to be on the beach. Preserve precision labels.
