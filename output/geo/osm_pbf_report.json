@@ -1,0 +1,12 @@
+{
+  "regions": [
+    "shikoku"
+  ],
+  "OSM_geometry_entities": 164,
+  "types": {
+    "port": 108,
+    "beach": 40,
+    "pier": 17
+  },
+  "remarks": "OSM geom defines named physical beach/pier boundaries, not the legal fishing permitted area."
+}
