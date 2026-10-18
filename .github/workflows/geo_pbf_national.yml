@@ -1,0 +1,81 @@
+name: Nationwide named beach coastline footprints
+on:
+  push:
+    branches: [research/geo-pbf-footprints-20261018]
+    paths: [.github/workflows/geo_pbf_national.yml]
+permissions:
+  contents: write
+jobs:
+  regions:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [hokkaido, tohoku, kanto, chubu, kansai, chugoku, kyushu, shikoku]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely osmium
+      - name: Extract real mapped named coastal features
+        env:
+          REGIONS: ${{ matrix.region }}
+        run: python -u research/osm_pbf_footprints.py
+      - name: Rename region-specific outputs
+        run: |
+          for f in output/geo/osm_*.csv output/geo/osm_*.geojson output/geo/osm_*report.json; do
+            [ -e "$f" ] || continue
+            mv "$f" "output/geo/${{ matrix.region }}_$(basename "$f")"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coast-${{ matrix.region }}
+          path: output/geo/
+  merge:
+    needs: regions
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coast-*
+          merge-multiple: true
+          path: output/geo/national
+      - name: Merge nationwide OSM named beach feature files
+        run: |
+          python - <<'PY'
+          import csv,glob,os,json,collections
+          files=sorted(glob.glob("output/geo/national/*_osm_named_features.csv"))
+          rows=[];fields=None
+          for file in files:
+            with open(file,encoding="utf-8-sig",newline="") as f:
+              reader=csv.DictReader(f);fields=reader.fieldnames or fields;rows.extend(list(reader))
+          if not fields:raise RuntimeError("No completed regional sources")
+          uniq={}
+          for r in rows:uniq[r["osm_id"]]=r
+          rows=list(uniq.values())
+          dest="output/geo/national_coastal_osm_features.csv"
+          with open(dest,"w",encoding="utf-8-sig",newline="") as f:
+            w=csv.DictWriter(f,fields);w.writeheader();w.writerows(rows)
+          reports=[]
+          for file in sorted(glob.glob("output/geo/national/*_osm_pbf_report.json")):
+            with open(file,encoding="utf-8") as f:reports.append(json.load(f))
+          report={"regions_reported":[r["regions"][0] for r in reports],"all_regional_features":len(rows),"by_kind":dict(collections.Counter(r["feature_type"] for r in rows)),"source":"Geofabrik regional OSM PBF","known_limitations":"Physical mapped beaches, harbours, piers; these are not the legal fishing-access boundaries"}
+          with open("output/geo/national_coastal_osm_report.json","w",encoding="utf-8") as f:json.dump(report,f,ensure_ascii=False,indent=2)
+          print(report)
+          PY
+      - name: Publish consolidated national coastal GIS data
+        run: |
+          git config user.name "national-coast-research-bot"
+          git config user.email "national-coast-research-bot@users.noreply.github.com"
+          git pull --rebase origin research/geo-pbf-footprints-20261018
+          git add output/geo/national_coastal_osm_features.csv output/geo/national_coastal_osm_report.json
+          git diff --staged --quiet || (git commit -m "Add named mapped coastlines from all Japanese regional OSM extracts" && git push origin HEAD:research/geo-pbf-footprints-20261018)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nationwide-coastal-geometries
+          path: |
+            output/geo/national_coastal_osm_features.csv
+            output/geo/national_coastal_osm_report.json
