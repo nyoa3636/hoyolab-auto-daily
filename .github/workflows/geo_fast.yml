@@ -1,0 +1,31 @@
+name: Georeference public fishing ports fast audit
+on:
+  push:
+    branches: [research/geo-fast-20261018]
+    paths: [.github/workflows/geo_fast.yml]
+permissions:
+  contents: write
+jobs:
+  geo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely
+      - name: Map 2006 official fishing port borders and municipalities
+        env:
+          SKIP_OSM: "1"
+        run: python -u research/georeference_dedupe.py
+      - name: Publish initial verified coordinates and audit
+        run: |
+          git config user.name "geo-research-bot"
+          git config user.email "geo-research-bot@users.noreply.github.com"
+          git add output/geo/
+          git diff --staged --quiet || (git commit -m "Publish C09 port points boundaries and verified dedup" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sea-fishing-geo-port-baseline
+          path: output/geo/
