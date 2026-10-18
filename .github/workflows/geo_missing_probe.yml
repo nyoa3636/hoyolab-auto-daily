@@ -1,0 +1,30 @@
+name: Probe missing coordinates from Anglers and FishCast
+on:
+  push:
+    branches: [research/geo-source-coords-20261018]
+    paths: [.github/workflows/geo_missing_probe.yml]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install --quiet requests beautifulsoup4
+      - name: Inspect source geo tags and hidden structured page metadata
+        run: |
+          python - <<'PY'
+          import requests,re,json
+          from bs4 import BeautifulSoup
+          urls=['https://anglers.jp/areas/3989','https://anglers.jp/areas/653','https://anglers.jp/areas/3831','https://fishcast.jp/spots/oritsu-kaigan','https://fishcast.jp/spots/kujihama-kaigan']
+          for u in urls:
+            try:
+              r=requests.get(u,timeout=15,headers={'User-Agent':'Mozilla/5.0'});h=r.text
+              print('SITE',u,'STATUS',r.status_code,'LEN',len(h))
+              soup=BeautifulSoup(h,'html.parser')
+              for x in soup.find_all('meta'):
+                if any(y in str(x).lower() for y in ['geo','lat','lon','location']): print('META',str(x)[:240])
+              for pattern in [r'(?:latitude|longitude|lat|lng)["\\\x27 :]{1,16}[-]?\d{1,3}\.\d+',r'\d{2}\.\d{3,9},1\d{2}\.\d{3,9}',r'@\d{2}\.\d+,1\d{2}\.\d+',r'coordinates.{0,120}']:
+                a=re.findall(pattern,h,re.IGNORECASE)
+                print('PAT',pattern,'COUNT',len(a),'SAMPLES',a[:12])
+            except Exception as e:print('ERR',u,str(e))
+          PY
