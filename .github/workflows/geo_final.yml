@@ -1,4 +1,4 @@
-name: Publish all source-anchored sea fishing points and search envelopes
+name: Final safe dedup and nationally mapped sea fishing coordinates
 on:
   push:
     branches: [research/geo-final-20261018]
