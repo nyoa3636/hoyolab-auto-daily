@@ -226,14 +226,96 @@ def geo_dedupe(rows):
             olddup.append({"保持した元行":master.get("元CSV行",""),"統合した元行":other.get("元CSV行",""),"地点名":other["釣り場名"],
                "保持した地点名":master["釣り場名"],"都道府県":master["都道府県"],"根拠":("同一地理地物ID" if master.get("範囲ジオメトリID") and master["範囲ジオメトリID"]==other.get("範囲ジオメトリID") else "同一公式施設IDまたは座標一致"),"削除元URL":other["出典URL"]})
     return [rows[i] for i in sorted(retained)],olddup
+
+# Remaining single-point locations were checked against published map positions.
+# A 'reference-area' point is not claimed to be on the beach. Preserve precision labels.
+ADDITIONAL_POINTS={
+ "波立海岸":("福島県","いわき市",37.1131605,140.9986935,"https://mapfan.com/spots/SCC%2CJ%2CAZN7","海岸入口の公表位置・海岸実地点の代理代表点"),
+ "萱浜海岸":("福島県","南相馬市",37.625583,141.011417,"https://postcode.teraren.com/postcodes/9750036","萱浜町域代表点（海岸への実際のアクセス地点は未特定）"),
+ "青塚海岸":("茨城県","鹿嶋市",36.0482141,140.6263016,"https://jl-db.nfaj.go.jp/location/080100055/","茨城県鹿嶋市青塚の所在地代表点（海岸実地点は未特定）"),
+ "平砂浦海岸":("千葉県","館山市",34.9405480,139.8110676,"https://tsuriba.info/spot/","同一海岸を示す既存掲載地点の代表座標"),
+ "太海海岸":("千葉県","鴨川市",35.0802634277004,140.09920208978,"https://maruchiba.jp/spot/detail_10683.html","千葉県公式観光サイトの太海海水浴場位置"),
+ "浜野海岸":("静岡県","掛川市",34.65538499814429,138.03353501684808,"https://fish-beginner.com/hamanokaigan","釣り場紹介ページの地図埋込中心点"),
+ "鮫島海岸":("静岡県","磐田市",34.6586671,137.8481526,"https://www.ishiguro-gr.com/enjoy/fishing-post/detail.php?id=315","釣具店の鮫島海岸アクセスマップ位置"),
+ "廿日市・大野浦海岸":("広島県","廿日市市",34.285,132.261,"https://tsurispot.com/spots/hatsukaichi-onoura-c8","元掲載ページのGPS位置"),
+ "高松市・大的場海岸護岸":("香川県","高松市",34.348,134.055,"https://tsurispot.com/spots/takamatsu-omatoba-kaigan","元掲載ページのGPS位置"),
+}
+BROAD_AREA_NAMES={
+ "県北サーフ":("宮城県","north",None),
+ "県南サーフ":("宮城県","south",None),
+ "仙台サーフ":("宮城県","municipality","仙台"),
+ "小田原サーフ":("神奈川県","municipality","小田原"),
+ "平塚サーフ":("神奈川県","municipality","平塚"),
+ "舞阪サーフ":("静岡県","municipality","浜松"),
+ "伊良湖サーフ":("愛知県","municipality","田原"),
+}
+def fill_remaining_coordinates(rows):
+    for r in rows:
+        if point(r):continue
+        n=r["釣り場名"]
+        if n not in ADDITIONAL_POINTS:continue
+        pref,city,lat,lon,url,note=ADDITIONAL_POINTS[n]
+        r["都道府県"]=pref;r["市区町村"]=city
+        r["緯度"]=str(lat);r["経度"]=str(lon);r["位置出典"]=url
+        r["位置照合"]=note;r["位置修正出典"]=url
+        r["座標品質"]="町域の参考座標" if n in ("萱浜海岸","青塚海岸") else (
+            "近傍アクセス点（海岸点未特定）" if n=="波立海岸" else "掲載元地図代表点")
+        r["監査備考"]=(r.get("監査備考") or "")+"; "+note
+        stats["additional_named_spots_filled"]+=1
+    for r in rows:
+        if point(r) or r["釣り場名"] not in BROAD_AREA_NAMES:continue
+        pref,kind0,mark=BROAD_AREA_NAMES[r["釣り場名"]]
+        candidates=[]
+        for x in rows:
+            if x is r or x["都道府県"]!=pref or G.typ(x)!="beach":continue
+            c=point(x)
+            if c is None:continue
+            if kind0=="north" and c[1]<38.28:continue
+            if kind0=="south" and c[1]>=38.28:continue
+            if kind0=="municipality" and mark not in (x["市区町村"]+" "+x["釣り場名"]):continue
+            candidates.append(c)
+        if not candidates:
+            stats["regional_area_no_references"]+=1;continue
+        lons=[c[0] for c in candidates];lats=[c[1] for c in candidates]
+        r["経度"]=str((min(lons)+max(lons))/2)
+        r["緯度"]=str((min(lats)+max(lats))/2)
+        r["座標品質"]="広域名の収録済み地点の外接矩形中心・釣り場地点ではない"
+        r["位置照合"]="広域ラベルを既収録の同エリア海岸地点から概括"
+        r["位置出典"]="既収録の同エリア海岸地点の代表座標群"
+        r["釣り場種別"]="広域エリア（単一点ではない）"
+        r["参考広域西端"]=str(min(lons));r["参考広域南端"]=str(min(lats))
+        r["参考広域東端"]=str(max(lons));r["参考広域北端"]=str(max(lats))
+        stats["broad_region_labels_centered"]+=1
+    # Distinguish real mapped outlines from a reproducible search/view window.
+    for r in rows:
+        c=point(r)
+        if not c:continue
+        if not r.get("座標品質"):
+            r["座標品質"]="GISまたは掲載元の代表座標"
+        if r.get("参考広域西端"):
+            bb=(float(r["参考広域西端"]),float(r["参考広域南端"]),
+                float(r["参考広域東端"]),float(r["参考広域北端"]))
+            r["参考探索矩形の意味"]="収録済み下位地点の範囲・法的釣り可能区域ではない"
+        else:
+            lon,lat=c
+            width=.3/111.195/math.cos(math.radians(lat))
+            height=.3/111.195
+            bb=(lon-width,lat-height,lon+width,lat+height)
+            r["参考探索矩形の意味"]="代表点の周囲約300m・地理的地点の正式境界ではない"
+        r["参考探索西端"]=f"{bb[0]:.8f}"
+        r["参考探索南端"]=f"{bb[1]:.8f}"
+        r["参考探索東端"]=f"{bb[2]:.8f}"
+        r["参考探索北端"]=f"{bb[3]:.8f}"
+
 def main():
     rows=reader(INPUT);print("INPUT",len(rows),flush=True)
     for r in rows:
-        r["不正座標"]="";r["地物区域の検証"]="未確認";r["位置修正出典"]="";r["範囲の意味"]="地理的物理地物の区域であり釣りの法的な許可区域ではない"
+        r["不正座標"]="";r["地物区域の検証"]="未確認";r["位置修正出典"]="";r["座標品質"]="";r["参考広域西端"]="";r["参考広域南端"]="";r["参考広域東端"]="";r["参考広域北端"]="";r["範囲の意味"]="地理的物理地物の区域であり釣りの法的な許可区域ではない"
     lookup_remainder(rows)
     apply_known_corrections(rows)
     features=load_features()
     match_osm(rows,features)
+    fill_remaining_coordinates(rows)
     region_validation(rows)
     dedup,deleted=geo_dedupe(rows)
     cols=list(rows[0].keys())
