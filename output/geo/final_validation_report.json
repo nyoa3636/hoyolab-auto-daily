@@ -1,11 +1,11 @@
 {
   "base_records": 5371,
-  "final_records": 5365,
-  "additional_deletions": 6,
-  "coordinates": 5365,
+  "final_records": 5330,
+  "additional_deletions": 41,
+  "coordinates": 5330,
   "coordinates_missing": 0,
-  "extent_from_official_or_osm": 2597,
-  "extent_not_verified": 2768,
+  "extent_from_official_or_osm": 2590,
+  "extent_not_verified": 2740,
   "survey_notes": "Actual physical footprints from national GIS, not legal boundaries for fishing.",
   "stats": {
     "fishcast_coords_added": 12,
@@ -14,7 +14,8 @@
     "mapped_extent_added": 52,
     "additional_named_spots_filled": 9,
     "broad_region_labels_centered": 7,
-    "missing_city_filled": 13
+    "missing_city_filled": 13,
+    "safe_duplicate_merges": 41
   },
   "issues": []
 }
