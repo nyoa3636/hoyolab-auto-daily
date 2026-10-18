@@ -1,0 +1,29 @@
+name: Nationwide OSM coast georeference and dedup capped runtime
+on:
+  push:
+    branches: [research/geo-osm-fast-20261018]
+    paths: [.github/workflows/geo_osm_fast.yml]
+permissions:
+  contents: write
+jobs:
+  georef:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely
+      - name: Resolve 6177 sites, national official port boundaries, OSM coastline shapes
+        run: python -u research/georeference_dedupe.py
+      - name: Commit checked coordinates and bounded areas
+        run: |
+          git config user.name "geo-research-bot"
+          git config user.email "geo-research-bot@users.noreply.github.com"
+          git add output/geo/
+          git diff --staged --quiet || (git commit -m "Extend port geographic verification with OSM beach geometries" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fishing-geo-osm
+          path: output/geo/
