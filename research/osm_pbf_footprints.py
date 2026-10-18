@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Directly process Japanese OSM PBF extracts to obtain true mapped beach outlines."""
-import os,sys,requests,math,csv,json,collections
+import os,sys,requests,math,csv,json,collections,time
 import osmium
 from shapely.geometry import Point,LineString,Polygon,mapping
 sys.path.insert(0,"research")
@@ -44,16 +44,35 @@ class Beaches(osmium.SimpleHandler):
             self.count["geometry_parse_error"]+=1
 
 def fetch_region(r):
-    addr=BASE+r+"-latest.osm.pbf"
     target="/tmp/region-"+r+".osm.pbf"
-    print("DOWNLOAD",addr,flush=True)
-    with requests.get(addr,timeout=180,stream=True,allow_redirects=True) as res:
-        res.raise_for_status()
-        with open(target,"wb") as f:
-            for chunk in res.iter_content(chunk_size=8*1024*1024):
-                if chunk:f.write(chunk)
-    print("DOWNLOAD_DONE",r,os.path.getsize(target),flush=True)
-    return target
+    urls=[BASE+r+"-latest.osm.pbf",
+       "https://download-ext2.geofabrik.de/asia/japan/"+r+"-latest.osm.pbf"]
+    failures=[]
+    for attempt in range(9):
+        size=os.path.getsize(target) if os.path.exists(target) else 0
+        headers={"Range":"bytes="+str(size)+"-"} if size else {}
+        addr=urls[attempt%len(urls)]
+        print("DOWNLOAD_RESUME",r,attempt,addr,"downloaded",size,flush=True)
+        try:
+            with requests.get(addr,timeout=(20,65),stream=True,allow_redirects=True,headers=headers) as res:
+                res.raise_for_status()
+                if size and res.status_code==206:
+                    mode="ab"
+                    expected=res.headers.get("Content-Range","")
+                    if not expected.startswith("bytes "+str(size)+"-"):
+                        raise RuntimeError("Content-Range invalid: "+expected)
+                else:
+                    mode="wb"
+                with open(target,mode) as f:
+                    for chunk in res.iter_content(chunk_size=1024*1024):
+                        if chunk:f.write(chunk)
+            print("DOWNLOAD_DONE",r,os.path.getsize(target),flush=True)
+            return target
+        except Exception as ex:
+            failures.append(str(ex)[:200])
+            print("DOWNLOAD_RETRY",r,attempt,str(ex)[:250],flush=True)
+            time.sleep(min(attempt+1,7))
+    raise RuntimeError("Failed to download "+r+": "+" | ".join(failures[-3:]))
 def main():
     cityat=municipal_shapes()
     allrows=[];cnt=collections.Counter()
