@@ -1,0 +1,34 @@
+name: National surf and beach fishing dataset
+on:
+  push:
+    branches: [research/sea-spots-20261018]
+    paths: [research/augment_surf.py, .github/workflows/surf_expansion.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verified-surf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --quiet requests beautifulsoup4 shapely
+      - run: python -m py_compile research/augment_surf.py
+      - name: Collect beaches named as fishing areas (fast phase)
+        env:
+          SKIP_OSM: "1"
+        run: python research/augment_surf.py
+      - name: Commit expanded CSV
+        run: |
+          git config user.name "fishing-research-bot"
+          git config user.email "fishing-research-bot@users.noreply.github.com"
+          git add output/national_sea_fishing_sites_surf_expanded.csv output/surf_beach_sites.csv output/surf_research_report.json
+          git diff --staged --quiet || (git commit -m "Collect surf fishing beach locations" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: national-surf-beach-fishing-data
+          path: output/*surf*
