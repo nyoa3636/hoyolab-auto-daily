@@ -1,0 +1,350 @@
+{
+  "all_sites": 6177,
+  "new_sites_added": 737,
+  "surf_coast_total": 1029,
+  "beach_with_fishing_report": 17,
+  "surf_with_municipality": 488,
+  "surf_missing_municipality": 541,
+  "surf_by_prefecture": {
+    "北海道": 40,
+    "青森県": 30,
+    "岩手県": 32,
+    "宮城県": 71,
+    "秋田県": 33,
+    "山形県": 27,
+    "福島県": 42,
+    "茨城県": 38,
+    "千葉県": 54,
+    "東京都": 25,
+    "神奈川県": 63,
+    "新潟県": 32,
+    "富山県": 24,
+    "石川県": 31,
+    "福井県": 45,
+    "静岡県": 49,
+    "愛知県": 20,
+    "三重県": 17,
+    "京都府": 7,
+    "大阪府": 4,
+    "兵庫県": 39,
+    "和歌山県": 13,
+    "鳥取県": 27,
+    "島根県": 18,
+    "岡山県": 8,
+    "広島県": 18,
+    "山口県": 19,
+    "徳島県": 15,
+    "香川県": 14,
+    "愛媛県": 24,
+    "高知県": 11,
+    "福岡県": 32,
+    "佐賀県": 10,
+    "長崎県": 20,
+    "熊本県": 6,
+    "大分県": 16,
+    "宮崎県": 16,
+    "鹿児島県": 25,
+    "沖縄県": 14
+  },
+  "source_presence": {
+    "ツリスポ": 576,
+    "海の釣り場情報": 147,
+    "国土数値情報C09": 146,
+    "FishCast": 230,
+    "アングラーズ（検索索引照合）": 17
+  },
+  "stats": {
+    "tsurispot_sitemap_entries": 4680,
+    "tsurispot_beach_matches": 576,
+    "fishcast_beach_links": 230,
+    "anglers_indexed": 17
+  },
+  "errors": [
+    [
+      "https://tsurispot.com/spots/kitahama-kaigan-beppu-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kitahama-kaigan-beppu-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/izumo-inasa-beach",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/izumo-inasa-beach"
+    ],
+    [
+      "https://tsurispot.com/spots/inasa-no-hama-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/inasa-no-hama-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/kokufu-kaigan-hamada-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kokufu-kaigan-hamada-a11"
+    ],
+    [
+      "https://tsurispot.com/spots/taisha-inasa-w7",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/taisha-inasa-w7"
+    ],
+    [
+      "https://tsurispot.com/spots/hashiko-beach-shimane",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hashiko-beach-shimane"
+    ],
+    [
+      "https://tsurispot.com/spots/masuda-mochiishi-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/masuda-mochiishi-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/senjoen-kaigan-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/senjoen-kaigan-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/oda-hane-kaigan-w7",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/oda-hane-kaigan-w7"
+    ],
+    [
+      "https://tsurispot.com/spots/iwami-kaihin-koen-w7",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/iwami-kaihin-koen-w7"
+    ],
+    [
+      "https://tsurispot.com/spots/hashiko-kaigan-c8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hashiko-kaigan-c8"
+    ],
+    [
+      "https://tsurispot.com/spots/hakone-kaigan-shimane-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hakone-kaigan-shimane-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/nima-kotogahama-w7",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/nima-kotogahama-w7"
+    ],
+    [
+      "https://tsurispot.com/spots/nima-kaigan-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/nima-kaigan-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/mochiishi-kaigan-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/mochiishi-kaigan-a11"
+    ],
+    [
+      "https://tsurispot.com/spots/niihama-marine-park-c8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/niihama-marine-park-c8"
+    ],
+    [
+      "https://tsurispot.com/spots/iyo-goshikihime-kaihin-koen",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/iyo-goshikihime-kaihin-koen"
+    ],
+    [
+      "https://tsurispot.com/spots/mitsuhama-matsuyama-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/mitsuhama-matsuyama-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/niihama-kuroshima-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/niihama-kuroshima-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/sakurai-kaigan-imabari-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/sakurai-kaigan-imabari-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/futami-uruzumi-gogan-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/futami-uruzumi-gogan-a11"
+    ],
+    [
+      "https://tsurispot.com/spots/futami-kaigan-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/futami-kaigan-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/kawaratsu-kaigan-w6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kawaratsu-kaigan-w6"
+    ],
+    [
+      "https://tsurispot.com/spots/fukaura-senjojiki-rocky-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/fukaura-senjojiki-rocky-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/natsudomari-tsubakiyama",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/natsudomari-tsubakiyama"
+    ],
+    [
+      "https://tsurispot.com/spots/senjojiki-kaigan-rocky-a10",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/senjojiki-kaigan-rocky-a10"
+    ],
+    [
+      "https://tsurispot.com/spots/tsugaru-dekishima-surf-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/tsugaru-dekishima-surf-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/ajigasawa-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/ajigasawa-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/tanesashi-kaigan6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/tanesashi-kaigan6"
+    ],
+    [
+      "https://tsurispot.com/spots/dekishima-beach-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/dekishima-beach-a11"
+    ],
+    [
+      "https://tsurispot.com/spots/imabetsu-horotsuki-beach-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/imabetsu-horotsuki-beach-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/okazaki-kaigan-aomori-e8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/okazaki-kaigan-aomori-e8"
+    ],
+    [
+      "https://tsurispot.com/spots/asamushi-onsen-beach-a10",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/asamushi-onsen-beach-a10"
+    ],
+    [
+      "https://tsurispot.com/spots/fukaura-okazaki-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/fukaura-okazaki-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/hashikami-kofunato-beach-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hashikami-kofunato-beach-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/hachinohe-osuga-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hachinohe-osuga-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/hashikami-kaigan6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hashikami-kaigan6"
+    ],
+    [
+      "https://tsurispot.com/spots/juniko-beach-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/juniko-beach-a11"
+    ],
+    [
+      "https://tsurispot.com/spots/hachinohe-shirahama-beach-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hachinohe-shirahama-beach-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/misawa-sabishiro-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/misawa-sabishiro-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/ajigasawa-narusawa-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/ajigasawa-narusawa-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/shichiri-nagahama6",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/shichiri-nagahama6"
+    ],
+    [
+      "https://tsurispot.com/spots/hiranai-asadokoro-beach-a10",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hiranai-asadokoro-beach-a10"
+    ],
+    [
+      "https://tsurispot.com/spots/aomori-gappo-beach-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/aomori-gappo-beach-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/aomori-tsukurimichi-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/aomori-tsukurimichi-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/aomori-kukurizaka-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/aomori-kukurizaka-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/mutsu-wakinosawa-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/mutsu-wakinosawa-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/oirase-mukaiyama-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/oirase-mukaiyama-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/noheji-arito-beach-a13",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/noheji-arito-beach-a13"
+    ],
+    [
+      "https://tsurispot.com/spots/okura-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/okura-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/minami-ashiyahama",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/minami-ashiyahama"
+    ],
+    [
+      "https://tsurispot.com/spots/hayashizaki-matsue-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hayashizaki-matsue-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/akashi-okura-coast",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/akashi-okura-coast"
+    ],
+    [
+      "https://tsurispot.com/spots/okura-kaigan-gogan-a12",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/okura-kaigan-gogan-a12"
+    ],
+    [
+      "https://tsurispot.com/spots/tainohama-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/tainohama-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/kamaya-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kamaya-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/suma-senmori-tottei",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/suma-senmori-tottei"
+    ],
+    [
+      "https://tsurispot.com/spots/nishinomiyahama",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/nishinomiyahama"
+    ],
+    [
+      "https://tsurispot.com/spots/ashiyahama-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/ashiyahama-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/takenohama-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/takenohama-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/hiyoriyama-kaigan-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/hiyoriyama-kaigan-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/matogata-beach",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/matogata-beach"
+    ],
+    [
+      "https://tsurispot.com/spots/ooshio-kaigan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/ooshio-kaigan"
+    ],
+    [
+      "https://tsurispot.com/spots/kasumi-satsu-kaigan-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kasumi-satsu-kaigan-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/tajima-moroyose-kou-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/tajima-moroyose-kou-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/kehinohama-k8",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/kehinohama-k8"
+    ],
+    [
+      "https://tsurispot.com/spots/ama-kaigan-a10",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/ama-kaigan-a10"
+    ],
+    [
+      "https://tsurispot.com/spots/takasago-kaihin-koen",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/takasago-kaihin-koen"
+    ],
+    [
+      "https://tsurispot.com/spots/akashi-kaihin-koen-gogan",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/akashi-kaihin-koen-gogan"
+    ],
+    [
+      "https://tsurispot.com/spots/aioi-iwashihama-a11",
+      "429 Client Error: Too Many Requests for url: https://tsurispot.com/spots/aioi-iwashihama-a11"
+    ]
+  ],
+  "caveats": [
+    "釣果投稿や紹介記事は現時点の釣り許可を保証しない",
+    "OSMのnatural=beachは釣り場ではなく地理的候補",
+    "名称・都道府県で重複除去。同名別地点は統合される可能性がある",
+    "地理データの市区町村は2021年版を利用。改編後の市町村は要再検証"
+  ]
+}
