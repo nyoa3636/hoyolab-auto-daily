@@ -1,0 +1,59 @@
+name: Collect national actual OSM beach and harbor geography
+on:
+  push:
+    branches: [research/geo-national-pbf-20261018]
+    paths: [.github/workflows/geo_pbf_national.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  region:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        region: [hokkaido, tohoku, kanto, chubu, kansai, chugoku, shikoku, kyushu]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely osmium
+      - name: Read named beaches and mapped extents from regional OSM
+        env:
+          REGIONS: ${{ matrix.region }}
+        run: python -u research/osm_pbf_footprints.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osm-${{ matrix.region }}
+          path: |
+            output/geo/osm_named_features.csv
+            output/geo/osm_named_features.geojson
+            output/geo/osm_pbf_report.json
+  combine:
+    runs-on: ubuntu-latest
+    needs: [region]
+    if: always()
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: osm-*
+          path: regional-download
+      - run: python research/assemble_osm_national.py
+      - name: Commit nationwide named coast geometry collection
+        run: |
+          git config user.name "geo-nation-bot"
+          git config user.email "geo-nation@users.noreply.github.com"
+          git add output/geo/national_osm_*
+          git diff --staged --quiet || (git commit -m "Collect named coast and pier geometry nationwide" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nationwide-osm-named-beaches
+          path: output/geo/national_osm_*
