@@ -1,0 +1,27 @@
+name: Retry Kansai OSM coast extract with resume
+on:
+  push:
+    branches: [research/geo-kansai-retry-20261018]
+    paths: [.github/workflows/geo_kansai_retry.yml]
+permissions:
+  contents: read
+jobs:
+  kansai:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely osmium
+      - name: Download and read Kansai map geography with automatic partial download recovery
+        env: {REGIONS: kansai}
+        run: python -u research/osm_pbf_footprints.py
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: osm-kansai-verified
+          path: |
+            output/geo/osm_named_features.csv
+            output/geo/osm_named_features.geojson
+            output/geo/osm_pbf_report.json
