@@ -3,6 +3,7 @@
   "prefectures": 39,
   "c23_shoreline_segments_examined": 74831,
   "matched_shoreline_features": 5193,
+  "full_named_coastline_segments": 369,
   "classification": {
     "近傍2006年水際線（750m以内）": 374,
     "outside3km": 137,
