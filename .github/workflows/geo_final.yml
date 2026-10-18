@@ -1,4 +1,4 @@
-name: Publish national OSM and corrected 8 prefectures sea fishing GIS dataset
+name: Publish all source-anchored sea fishing points and search envelopes
 on:
   push:
     branches: [research/geo-final-20261018]
