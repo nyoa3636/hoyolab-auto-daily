@@ -1,0 +1,32 @@
+name: Nationwide national-land C23 shoreline verification for 5330 fishing sites
+on:
+  push:
+    branches: [research/geo-C23-20261018]
+    paths: [.github/workflows/c23_join.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  geocoast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet shapely pyshp requests
+      - run: python -m py_compile research/c23_shoreline_join.py
+      - name: Compare every site with national surveyed shoreline per prefecture
+        run: python -u research/c23_shoreline_join.py
+      - name: Upload audit, shoreline reference geometry and matched dataset
+        run: |
+          git config user.name "coast-research"
+          git config user.email "coast-research@users.noreply.github.com"
+          git add output/geo/c23_*
+          git diff --staged --quiet || (git commit -m "Join 2006 surveyed official Japanese coastal lines to fishing locations" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nationwide-source-backed-coastline
+          path: output/geo/c23_*
