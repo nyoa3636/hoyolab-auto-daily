@@ -1,0 +1,41 @@
+name: Survey precise coast points from individual external maps
+on:
+  push:
+    branches: [research/geo-final-20261018]
+    paths: [.github/workflows/probe_missing_coasts.yml]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install --quiet requests beautifulsoup4
+      - name: Read map coordinates of specific nine unmapped beaches
+        run: |
+          python - <<'PY'
+          import requests,re
+          from bs4 import BeautifulSoup
+          sites=[
+          "https://t.turihiroba.com/turiba1/fukusimahaltutatikaigann.html",
+          "https://ibaraki.turihiroba.com/turiba/ibarakiaodukakaigann.html",
+          "https://fish-beginner.com/hamanokaigan",
+          "https://www.ishiguro-gr.com/enjoy/fishing-post/detail.php?id=315",
+          "https://maruchiba.jp/spot/detail_10683.html",
+          "https://tsurispot.com/spots/hatsukaichi-onoura-c8",
+          "https://tsurispot.com/spots/takamatsu-omatoba-kaigan",
+          ]
+          patterns=[r'(?<!\d)(?:3[3-9]|4[0-5])\.\d{4,9}\s*,\s*1[2-5]\d\.\d{4,9}',
+                    r'coordinates[^;<>]{0,120}',r'latitude[^;<>]{0,100}',r'longitude[^;<>]{0,100}',r'center[^;<>]{0,100}',r'maps/embed[^"< ]{0,180}']
+          for url in sites:
+            try:
+              r=requests.get(url,timeout=18,headers={"User-Agent":"Mozilla/5.0"})
+              s=BeautifulSoup(r.text,'html.parser')
+              print('SITE',url,r.status_code,len(r.content))
+              for x in s.select('iframe[src],a[href],meta[content]'):
+                v=x.get("src") or x.get("href") or x.get("content") or ""
+                if any(t in v for t in ["google.com/maps","maps.google.com","maps?","geo:","api=1&query"]):print('MAPLINK',v[:450])
+              for pat in patterns:
+                arr=re.findall(pat,r.text,re.IGNORECASE)
+                if arr:print('PAT',pat[:25],'COUNT',len(arr),'SAMPLES',arr[:5])
+            except Exception as e:print('ERROR',str(e))
+          PY
