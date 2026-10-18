@@ -1,73 +1,18 @@
 {
   "base_records": 5371,
-  "final_records": 5367,
-  "additional_deletions": 4,
-  "coordinates": 5343,
-  "coordinates_missing": 24,
-  "extent_from_official_or_osm": 2547,
-  "extent_not_verified": 2820,
+  "final_records": 5365,
+  "additional_deletions": 6,
+  "coordinates": 5349,
+  "coordinates_missing": 16,
+  "extent_from_official_or_osm": 2597,
+  "extent_not_verified": 2768,
   "survey_notes": "Actual physical footprints from national GIS, not legal boundaries for fishing.",
   "stats": {
     "fishcast_coords_added": 12,
-    "missing_city_filled": 11,
-    "wrong_prefecture_coords_held": 8
+    "verified_location_corrections": 9,
+    "cross_prefecture_river_mouth": 1,
+    "mapped_extent_added": 52,
+    "missing_city_filled": 11
   },
-  "issues": [
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "岩井海岸",
-      "old_geo": "35.0428000,139.8450000",
-      "pref": "東京都",
-      "located_pref": "千葉県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "幕張の浜",
-      "old_geo": "35.6418000,140.0318000",
-      "pref": "東京都",
-      "located_pref": "千葉県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "浦安高洲海浜公園",
-      "old_geo": "35.6290000,139.9062000",
-      "pref": "東京都",
-      "located_pref": "千葉県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "白子海岸",
-      "old_geo": "35.4308000,140.3678000",
-      "pref": "東京都",
-      "located_pref": "千葉県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "湯河原海岸",
-      "old_geo": "35.1388000,139.1088000",
-      "pref": "神奈川県",
-      "located_pref": "静岡県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "宮崎・境海岸(ヒスイ海岸)",
-      "old_geo": "36.958,137.565",
-      "pref": "新潟県",
-      "located_pref": "富山県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "王子ヶ浜海岸",
-      "old_geo": "33.7380000,135.9850000",
-      "pref": "和歌山県",
-      "located_pref": "三重県"
-    },
-    {
-      "error_type": "prefecture_mismatch",
-      "name": "熊野川河口",
-      "old_geo": "33.7284086,136.0072660",
-      "pref": "和歌山県",
-      "located_pref": "三重県"
-    }
-  ]
+  "issues": []
 }
