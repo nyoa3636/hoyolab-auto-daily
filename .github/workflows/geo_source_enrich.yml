@@ -1,0 +1,30 @@
+name: Georeference all fishing spots from source page Google Maps
+on:
+  push:
+    branches: [research/geo-source-coords-20261018]
+    paths: [.github/workflows/geo_source_enrich.yml]
+permissions:
+  contents: write
+jobs:
+  scrape-exact-coords:
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely beautifulsoup4
+      - run: python -m py_compile research/geo_source_enrich.py
+      - name: Extract exact map positions from individual fishing-spot source pages with rate limits
+        run: python -u research/geo_source_enrich.py
+      - name: Publish source-proven coordinate dataset
+        run: |
+          git config user.name "geo-source-research-bot"
+          git config user.email "geo-source-research-bot@users.noreply.github.com"
+          git add output/geo/
+          git diff --staged --quiet || (git commit -m "Publish exact page-mapped sea fishing positions" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-source-fishing-location-records
+          path: output/geo/
