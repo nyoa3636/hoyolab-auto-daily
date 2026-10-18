@@ -66,7 +66,7 @@ def reader_shp(z,filename):
     stem=filename[:-4]
     k=(stem+".dbf").lower()
     if k not in files:return None
-    kw={"shp":io.BytesIO(z.read(files[filename.lower()])),"dbf":io.BytesIO(z.read(files[k]])),"encoding":"cp932","encodingErrors":"replace"}
+    kw={"shp":io.BytesIO(z.read(files[filename.lower()])),"dbf":io.BytesIO(z.read(files[k])),"encoding":"cp932","encodingErrors":"replace"}
     if (stem+".shx").lower() in files:kw["shx"]=io.BytesIO(z.read(files[(stem+".shx").lower()]))
     return shapefile.Reader(**kw)
 def load_ports():
