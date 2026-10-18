@@ -1,0 +1,35 @@
+{
+  "input": 5371,
+  "original_coordinate_missing": 2156,
+  "new_page_coordinates": 2128,
+  "updated_row_count": 5371,
+  "source_extra_duplicates": 0,
+  "remaining_without_coordinate": 28,
+  "with_coordinate": 5343,
+  "with_mapped_extent": 2551,
+  "source_counts": {
+    "tsurispot.com": 458,
+    "tsuriba.info": 1672,
+    "anglers.jp": 14,
+    "fishcast.jp": 12
+  },
+  "statuses": {
+    "座標取得": 2128,
+    "未取得": 28,
+    "missing:URL対象外": 14,
+    "missing:該当ページ座標なし": 12,
+    "missing:HTTP:403": 2
+  },
+  "rate_limited_domains": [],
+  "geo_polygon_statistics": {
+    "municipality_filled": 349,
+    "municipality_conflicts": 97,
+    "coord_pref_mismatches": 23
+  },
+  "notes": [
+    "個別サイトのGoogle Maps埋込座標または構造化データのみ採用し、推定市町村中心は使用しない。",
+    "座標は地点の代表点であり、釣り可能範囲とは異なる。",
+    "座標・範囲が未収録の場合は未確認のままにしている。",
+    "釣り許可は別途管理者等の最新案内が必要。"
+  ]
+}
