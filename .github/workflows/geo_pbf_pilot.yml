@@ -1,0 +1,31 @@
+name: OSM PBF coastline geometry extraction pilot
+on:
+  push:
+    branches: [research/geo-pbf-footprints-20261018]
+    paths: [.github/workflows/geo_pbf_pilot.yml]
+permissions:
+  contents: write
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely osmium
+      - run: python -m py_compile research/osm_pbf_footprints.py
+      - name: Extract real GIS beach outlines from Shikoku OSM PBF
+        env: {REGIONS: shikoku}
+        run: python -u research/osm_pbf_footprints.py
+      - name: Publish named coastal geometries
+        run: |
+          git config user.name "geo-pbf-research-bot"
+          git config user.email "geo-pbf-research-bot@users.noreply.github.com"
+          git add output/geo/osm_*
+          git diff --staged --quiet || (git commit -m "Publish directly mapped coast and pier boundaries" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osm-actual-coast-pilot
+          path: output/geo/osm_*
