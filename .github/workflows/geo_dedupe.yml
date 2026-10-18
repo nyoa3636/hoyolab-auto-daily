@@ -1,0 +1,31 @@
+name: Georeference and deduplicate 6177 sea fishing records
+on:
+  push:
+    branches: [research/georeference-dedupe-20261018]
+    paths: [research/georeference_dedupe.py, .github/workflows/geo_dedupe.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  geo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet requests pyshp shapely
+      - run: python -m py_compile research/georeference_dedupe.py
+      - name: Resolve public geographic coordinates and actual mapped extents, remove only proven duplicates
+        run: python -u research/georeference_dedupe.py
+      - name: Publish audited outputs to separate research branch
+        run: |
+          git config user.name "geo-research-bot"
+          git config user.email "geo-research-bot@users.noreply.github.com"
+          git add output/geo/
+          git diff --staged --quiet || (git commit -m "Publish audited coordinates footprints and deduplicated locations" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: japan-geo-deduplicated-dataset
+          path: output/geo/
