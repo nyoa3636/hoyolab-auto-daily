@@ -339,6 +339,8 @@ if __name__=="__main__":
         fc=list(pool.map(enrich_fishcast,b))
     log("FISHCAST ENRICHED",len(fc),"VALID",sum(x is not None for x in fc))
     ang=anglers()
-    osm=osm_beaches()
-    osm2=municipality_lookup(osm)
+    osm2=[]
+    if not os.environ.get('SKIP_OSM'):
+        osm=osm_beaches()
+        osm2=municipality_lookup(osm)
     merge(original,t+fc+ang+osm2)
