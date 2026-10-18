@@ -68,7 +68,7 @@ def process_pref(pref,rows):
     if segs is None:return {"pref":pref,"error":err,"rows":rows,"features":[],"found":0}
     shapes=[seg["geometry"] for seg in segs];tree=STRtree(shapes)
     identity={id(g):i for i,g in enumerate(shapes)}
-    features=[];counts=collections.Counter()
+    features=[];fullnamed=[];counts=collections.Counter()
     for r in rows:
         for k in ("C23海岸線距離m","C23海岸保全区域名","C23海岸管理者",
             "C23海岸線地物ID","C23水際線出典","C23参照海岸線形状",
@@ -103,7 +103,12 @@ def process_pref(pref,rows):
         seg=segs[idx];r["C23海岸線距離m"]=f"{d:.1f}"
         r["C23海岸保全区域名"]=seg["name"];r["C23海岸管理者"]=seg["manager"]
         r["C23海岸線地物ID"]=seg["id"];r["C23水際線出典"]=url
-        if exact and d<=750:status="海岸名一致・2006年の公的海岸線参照"
+        if exact and d<=750:
+            fullnamed.append({"type":"Feature","geometry":mapping(seg["geometry"]),
+              "properties":{"coastline_segment_id":seg["id"],"coastline_name":seg["name"],
+                "admin_code_2006":seg["admin"],"coastline_manager":seg["manager"],"source_url":url,
+                "matched_spot_row":r.get("元CSV行"),"status":"2006年公的海岸線名称一致・釣り許可区域ではない"}})
+            status="海岸名一致・2006年の公的海岸線参照"
         elif d<=250:status="海岸名一致なし・近傍2006年水際線"
         elif d<=750:status="近傍2006年水際線（750m以内）"
         elif d<=2000:status="遠方2006年水際線（2000m以内）"
@@ -129,27 +134,34 @@ def process_pref(pref,rows):
                 "prefecture":pref,"c23_id":seg["id"],"c23_name":seg["name"],
                 "distance_m":float(r["C23海岸線距離m"]),
                 "scope":"近傍国土数値情報2006年海岸線の500m表示用区間・釣り場利用可能範囲ではない"}})
-    return {"pref":pref,"rows":rows,"features":features,"counts":dict(counts),"segments":len(segs),"url":url}
+    return {"pref":pref,"rows":rows,"features":features,"fullnamed":fullnamed,"counts":dict(counts),"segments":len(segs),"url":url}
 def main():
     rows=load();by=collections.defaultdict(list)
     for r in rows:by[r["都道府県"]].append(r)
-    jobs=list(by.items());allfeatures=[];reports=[]
+    jobs=list(by.items());allfeatures=[];allfullnamed=[];reports=[]
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         fut=[ex.submit(process_pref,p,rr) for p,rr in jobs]
         for f in concurrent.futures.as_completed(fut):
-            a=f.result();reports.append({k:v for k,v in a.items() if k not in ("rows","features")})
+            a=f.result();reports.append({k:v for k,v in a.items() if k not in ("rows","features","fullnamed")})
             allfeatures.extend(a["features"])
+            allfullnamed.extend(a.get("fullnamed") or [])
             print("C23_PREF",a["pref"],a.get("segments"),len(a["features"]),a.get("counts"),a.get("error"),flush=True)
     cols=list(rows[0])
     with open(DIR+"c23_shoreline_enriched.csv","w",newline="",encoding="utf-8-sig") as f:
         w=csv.DictWriter(f,cols,extrasaction="ignore");w.writeheader();w.writerows(rows)
     with open(DIR+"c23_nearby_shoreline_500m.geojson","w",encoding="utf-8") as f:
         json.dump({"type":"FeatureCollection","features":allfeatures},f,ensure_ascii=False)
+    unique_fullnamed={}
+    for feat in allfullnamed:
+        k=feat["properties"]["coastline_segment_id"]
+        unique_fullnamed[k]=feat
+    with open(DIR+"c23_full_official_named_coast_segments.geojson","w",encoding="utf-8") as f:
+        json.dump({"type":"FeatureCollection","features":list(unique_fullnamed.values())},f,ensure_ascii=False)
     totals=collections.Counter();total_seg=0
     for r in reports:
         totals.update(r.get("counts") or {});total_seg+=r.get("segments") or 0
     stat={"records":len(rows),"prefectures":len(reports),"c23_shoreline_segments_examined":total_seg,
-        "matched_shoreline_features":len(allfeatures),"classification":dict(totals),
+        "matched_shoreline_features":len(allfeatures),"full_named_coastline_segments":len(unique_fullnamed),"classification":dict(totals),
         "missing_c23_prefectures":[r["pref"] for r in reports if r.get("error")],
         "sources":"国土数値情報 C23-06、平成18年作成・JGD2000",
         "important_caveat":"海岸線は釣り場区域または立入・釣り許可区域の確定範囲ではない。位置近傍の公的水際線である。",
